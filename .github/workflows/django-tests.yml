@@ -19,7 +19,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install docker-compose -y
 
       - name: Build and run services
-        run: docker-compose -f ./docker/docker-compose.yml up -d --build
+        run: docker-compose -f ./docker-compose.yml up -d --build
 
       - name: Wait for services to be ready
         run: |
