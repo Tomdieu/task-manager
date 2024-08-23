@@ -35,16 +35,16 @@ jobs:
       - name: Build and run services
         run: docker-compose -f ./docker-compose.yml up -d --build
 
-      - name: Wait for services to be ready
-        run: |
-          echo "Waiting for PostgreSQL to be ready..."
-          until docker-compose exec db pg_isready -U user -d task_db; do
-            sleep 1
-          done
-          echo "Waiting for Elasticsearch to be ready..."
-          until docker-compose exec elasticsearch curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'; do
-            sleep 1
-          done
+      # - name: Wait for services to be ready
+      #   run: |
+      #     echo "Waiting for PostgreSQL to be ready..."
+      #     until docker-compose exec db pg_isready -U user -d task_db; do
+      #       sleep 1
+      #     done
+      #     echo "Waiting for Elasticsearch to be ready..."
+      #     until docker-compose exec elasticsearch curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'; do
+      #       sleep 1
+      #     done
 
       - name: Run migrations
         run: docker-compose exec web python manage.py migrate
