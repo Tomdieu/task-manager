@@ -30,4 +30,8 @@ COPY . .
 
 EXPOSE 8000
 
+
+# Migrate the database
+RUN python manage.py makemigrations &&  python manage.py migrate
+
 CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && gunicorn --bind 0.0.0.0:8000 task_manager.wsgi:application"]
