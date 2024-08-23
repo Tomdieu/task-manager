@@ -1,0 +1,47 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ main ] # Adjust branch names as needed
+  pull_request:
+    branches: [ main ] 
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and tag images
+        uses: docker/build-push-action@v4
+        with:
+          context: . 
+          file: ./Dockerfile
+          push: false # Set to true if you want to push the image
+          tags: task_manager:latest # Replace with your desired image tag
+
+      - name: Start Services (docker-compose)
+        run: |
+          docker-compose up -d --build # Build if needed
+          docker-compose ps # Check if services started
+
+      - name: Wait for PostgreSQL
+        uses: jakejarvis/wait-action@v1
+        with:
+          timeout: 60 # Timeout after 60 seconds
+          host: db # Service name from docker-compose
+          port: 5432  
+
+      - name: Run migrations and tests
+        run: |
+          docker-compose exec web python manage.py migrate
+          docker-compose exec web python manage.py test # Or your test command
+
+      - name: Stop Services (docker-compose)
+        if: always()
+        run: docker-compose down
