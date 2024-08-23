@@ -1,4 +1,6 @@
-FROM python:3.9-slim
+FROM python:3.10.13-slim-bullseye
+LABEL authors="ivantom"
+
 
 # Set Environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
