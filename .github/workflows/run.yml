@@ -2,6 +2,13 @@ name: Docker Compose Action
 
 on: [push]
 
+env:
+  POSTGRES_DB: "task_db"
+  POSTGRES_USER: "user"
+  POSTGRES_PASSWORD: "password"
+  POSTGRES_HOST: "db"
+  POSTGRES_PORT: 5432
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,3 +40,9 @@ jobs:
       - name: Execute tests in the running services
         run: |
           docker-compose exec web pytest
+        env:
+          POSTGRES_DB: "task_db"
+          POSTGRES_USER: "user"
+          POSTGRES_PASSWORD: "password"
+          POSTGRES_HOST: "db"
+          POSTGRES_PORT: 5432
