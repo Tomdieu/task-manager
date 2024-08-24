@@ -39,7 +39,7 @@ jobs:
 
       - name: Execute tests in the running services
         run: |
-          docker-compose exec web pytest
+          docker-compose exec -T web pytest
         env:
           POSTGRES_DB: "task_db"
           POSTGRES_USER: "user"
