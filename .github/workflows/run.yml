@@ -23,6 +23,12 @@ jobs:
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
           compose-file: "./docker-compose.yml"
+        env:
+          POSTGRES_DB: "task_db"
+          POSTGRES_USER: "user"
+          POSTGRES_PASSWORD: "password"
+          POSTGRES_HOST: "db"
+          POSTGRES_PORT: 5432
 
       - name: Execute tests in the running services
         run: |
