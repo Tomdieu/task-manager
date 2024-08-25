@@ -189,11 +189,11 @@ REST_FRAMEWORK = {
 
 # Elasticsearch Configuration
 
-ELASTICSEARCH_HOST = env('ELASTICSEARCH_HOST',default='localhost')
-
+ELASTICSEARCH_HOST = env('ELASTICSEARCH_HOST',default='http://localhost:9200')
+print(ELASTICSEARCH_HOST)
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': f'${ELASTICSEARCH_HOST}:9200'  # From docker-compose
+        'hosts': ELASTICSEARCH_HOST  # From docker-compose
     },
 }
 

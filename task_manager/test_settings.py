@@ -64,8 +64,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
-    # "django_elasticsearch_dsl",
-    # 'django_elasticsearch_dsl_drf',
+    "django_elasticsearch_dsl",
+    'django_elasticsearch_dsl_drf',
 
 
 ]
@@ -190,14 +190,13 @@ REST_FRAMEWORK = {
 
 # Elasticsearch Configuration
 
-ELASTICSEARCH_HOST = env('ELASTICSEARCH_HOST',default='localhost')
-
+ELASTICSEARCH_HOST = env('ELASTICSEARCH_HOST',default='http://localhost:9200')
+print(ELASTICSEARCH_HOST)
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'localhost:9200',  # You can mock or use a test instance
+        'hosts': ELASTICSEARCH_HOST  # From docker-compose
     },
 }
-
 ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'django_elasticsearch_dsl.signals.RealTimeSignalProcessor'
 
 

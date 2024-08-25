@@ -10,15 +10,18 @@ class TaskDocument(Document):
     # Define a field for the username from the related User model
     user = fields.ObjectField(properties={
         'username': fields.TextField(),
+        "id":fields.IntegerField(),
+        "first_name":fields.TextField(),
+        "last_name":fields.TextField()
     })
 
     class Index:
         name = "tasks"
 
-    settings = {
-        "number_of_shards": 1,
-        "number_of_replicas": 0,
-    }
+        settings = {
+            "number_of_shards": 1,
+            "number_of_replicas": 0,
+        }
 
     def get_queryset(self):
         return super(TaskDocument, self).get_queryset().select_related("user")
@@ -30,6 +33,7 @@ class TaskDocument(Document):
     class Django:
         model = Task
         fields = [
+            "id",
             'title',
             'description',
             'completed',

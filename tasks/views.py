@@ -8,13 +8,14 @@ from rest_framework.authentication import (SessionAuthentication,
                                            TokenAuthentication)
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from .documents import TaskDocument
 from .models import Task
-from .serializers import TaskSerializer
+from .serializers import TaskSerializer,TaskDetailSerializer
+from rest_framework.views import APIView
 
 # Create your views here.
 
@@ -22,8 +23,19 @@ class TaskViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication,SessionAuthentication]
     
-    serializer_class = TaskSerializer
+    search_document = TaskDocument
     queryset = Task.objects.all()
+
+    def get_serializer_class(self):
+        if self.action in ["list","retrieve"]:
+            return TaskDetailSerializer
+        return TaskSerializer
+
+class SearchTaskView(APIView):
+    permission_classes = [AllowAny]
+    search_document = TaskDocument
+    search_serializer = TaskDetailSerializer
+    pagination_class = PageNumberPagination
 
     @swagger_auto_schema(
         operation_description="Search articles",
@@ -35,27 +47,24 @@ class TaskViewSet(ModelViewSet):
                 required=False,
                 description="Page number for pagination",
             ),
-            openapi.Parameter(
-                name="query",
-                in_=openapi.IN_PATH,
-                type=openapi.TYPE_STRING,
-                required=True,
-                description="Search tesk by name ,description or owner",
-            )
+            # openapi.Parameter(
+            #     name="query",
+            #     in_=openapi.IN_PATH,
+            #     type=openapi.TYPE_STRING,
+            #     required=True,
+            #     description="Search tesk by name ,description or owner",
+            # )
         ],
     )
-    @action(methods=['GET'],detail=False)
-    def search(self,request,query):
+    def get(self, request, query):
 
         try:
             q = Q(
                 "query_string",
-                query="*" + query + "*",
+                query=f"*{query}*",
                 fields=[
                     "title",
                     "description",
-                    "user.username"
-                    
                 ],
                 fuzziness="auto",
             )
@@ -63,6 +72,10 @@ class TaskViewSet(ModelViewSet):
             search = self.search_document.search()
             search = search.query(q)
             response = search.execute()
+
+            # Handle empty search results
+            if not response:
+                return Response({"message": "No matching tasks found."}, status=status.HTTP_404_NOT_FOUND)
 
             paginator = self.pagination_class()
             paginated_response = paginator.paginate_queryset(

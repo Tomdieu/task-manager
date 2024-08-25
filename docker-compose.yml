@@ -26,18 +26,22 @@ services:
       - postgres_test_data:/var/lib/postgresql/data
     command: ["postgres", "-c", "fsync=off", "-c", "full_page_writes=off"] # Speed up tests
 
-  # web:
-  #   build: .
-  #   command: gunicorn task_manager.wsgi:application --bind 0.0.0.0:8000
-  #   volumes:
-  #     - .:/app
-  #   ports:
-  #     - "8000:8000"
-  #   depends_on:
-  #     - db
-  #     - elasticsearch
-  #   environment:
-  #     - DATABASE_URL=postgres://user:password@db:5432/task_db
+  web:
+    build: .
+    command: gunicorn task_manager.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - elasticsearch
+    environment:
+      - DATABASE_URL=postgres://user:password@db:5432/task_db
+      - POSTGRES_DB=task_db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
 
   elasticsearch:
     image: elasticsearch:7.17.16
