@@ -29,6 +29,22 @@ To develop a secure, high-performance, and scalable backend for a task managemen
 - Search Functionality:
   - Search tasks using Elasticsearch based on `title` and `description`
 
+## Setup
+
+### Create a `.env` File
+
+In the root directory of the project, create a `.env` file with the following values:
+
+```js
+POSTGRES_DB="task_db"
+POSTGRES_USER="user"
+POSTGRES_PASSWORD="password"
+POSTGRES_HOST="localhost"
+POSTGRES_PORT=5432
+
+ELASTICSEARCH_HOST="http://localhost:9200"
+```
+
 ## Running the Application Without Docker
 
 1. **Clone the Repository:**
