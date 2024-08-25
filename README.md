@@ -56,6 +56,7 @@ ELASTICSEARCH_HOST="http://localhost:9200"
 2. **Install the Dependencies:**
 
     ```bash
+    cd task-manager
     pip install -r requirements.txt
     ```
 
@@ -138,6 +139,7 @@ ELASTICSEARCH_HOST="http://localhost:9200"
 2. **Install the Dependencies:**
 
     ```bash
+    cd task-manager
     pip install -r requirements.txt
     ```
 
