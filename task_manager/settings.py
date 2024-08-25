@@ -193,7 +193,7 @@ ELASTICSEARCH_HOST = env('ELASTICSEARCH_HOST',default='localhost')
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'elasticsearch:9200'  # From docker-compose
+        'hosts': f'${ELASTICSEARCH_HOST}:9200'  # From docker-compose
     },
 }
 

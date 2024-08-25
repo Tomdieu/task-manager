@@ -39,25 +39,25 @@ services:
   #   environment:
   #     - DATABASE_URL=postgres://user:password@db:5432/task_db
 
-  # elasticsearch:
-  #   image: elasticsearch:7.17.16
-  #   container_name: elasticsearch
-  #   restart: always  # Ensure automatic restarts
-  #   ports:
-  #     - "9200:9200"  # Expose port 9200 for external access
-  #   environment:
-  #     - discovery.type=single-node  # Configure for single-node setup
-  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # Optional: Set JVM memory limits
-  #   volumes:
-  #     - esdata:/usr/share/elasticsearch/data  # Create a volume for persistent data
-  #   network_mode: bridge
-  #   mem_limit: 1073741824
-  #   ulimits:
-  #     memlock:
-  #       soft: -1
-  #       hard: -1
+  elasticsearch:
+    image: elasticsearch:7.17.16
+    container_name: elasticsearch
+    restart: always  # Ensure automatic restarts
+    ports:
+      - "9200:9200"  # Expose port 9200 for external access
+    environment:
+      - discovery.type=single-node  # Configure for single-node setup
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # Optional: Set JVM memory limits
+    volumes:
+      - esdata:/usr/share/elasticsearch/data  # Create a volume for persistent data
+    network_mode: bridge
+    mem_limit: 1073741824
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
 
 volumes:
   postgres_data:
   postgres_test_data:
-  # esdata:
+  esdata:
