@@ -1,46 +1,63 @@
-version: '3.8'
+version: '3.7'
 
 services:
   db:
     image: postgres:alpine3.20
+    container_name: postgres-task
+    restart: unless-stopped
     environment:
       POSTGRES_DB: task_db
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  web:
-    build: .
-    command: gunicorn task_manager.wsgi:application --bind 0.0.0.0:8000
-    volumes:
-      - .:/app
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
-      - elasticsearch
+  test_db:
+    image: postgres:alpine3.20
+    container_name: postgres-test-task
     environment:
-      - DATABASE_URL=postgres://user:password@db:5432/task_db
-
-  elasticsearch:
-    image: elasticsearch:7.17.16
-    container_name: elasticsearch
-    restart: always  # Ensure automatic restarts
+      POSTGRES_DB: task_manager_test
+      POSTGRES_USER: task_manager
+      POSTGRES_PASSWORD: task_manager
     ports:
-      - "9200:9200"  # Expose port 9200 for external access
-    environment:
-      - discovery.type=single-node  # Configure for single-node setup
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # Optional: Set JVM memory limits
+      - "5433:5432"  # Expose on a different port to avoid conflict with your main DB
     volumes:
-      - esdata:/usr/share/elasticsearch/data  # Create a volume for persistent data
-    network_mode: bridge
-    mem_limit: 1073741824
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+      - postgres_test_data:/var/lib/postgresql/data
+    command: ["postgres", "-c", "fsync=off", "-c", "full_page_writes=off"] # Speed up tests
+
+  # web:
+  #   build: .
+  #   command: gunicorn task_manager.wsgi:application --bind 0.0.0.0:8000
+  #   volumes:
+  #     - .:/app
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - db
+  #     - elasticsearch
+  #   environment:
+  #     - DATABASE_URL=postgres://user:password@db:5432/task_db
+
+  # elasticsearch:
+  #   image: elasticsearch:7.17.16
+  #   container_name: elasticsearch
+  #   restart: always  # Ensure automatic restarts
+  #   ports:
+  #     - "9200:9200"  # Expose port 9200 for external access
+  #   environment:
+  #     - discovery.type=single-node  # Configure for single-node setup
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # Optional: Set JVM memory limits
+  #   volumes:
+  #     - esdata:/usr/share/elasticsearch/data  # Create a volume for persistent data
+  #   network_mode: bridge
+  #   mem_limit: 1073741824
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
 
 volumes:
   postgres_data:
-  esdata:
+  postgres_test_data:
+  # esdata:

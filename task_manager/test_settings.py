@@ -1,3 +1,4 @@
+# test_settings.py
 """
 Django settings for task_manager project.
 
@@ -61,10 +62,10 @@ INSTALLED_APPS = [
     # Thrid party apps
     "drf_yasg",
     "rest_framework",
-     "rest_framework.authtoken",
+    "rest_framework.authtoken",
     "corsheaders",
-    "django_elasticsearch_dsl",
-    'django_elasticsearch_dsl_drf',
+    # "django_elasticsearch_dsl",
+    # 'django_elasticsearch_dsl_drf',
 
 
 ]
@@ -113,16 +114,16 @@ WSGI_APPLICATION = 'task_manager.wsgi.application'
 
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("POSTGRES_DB",default="task_db"),
-        "USER": env("POSTGRES_USER",default="user"),
-        "PASSWORD": env("POSTGRES_PASSWORD",default="password"),
-        "HOST": env("POSTGRES_HOST",default="localhost"),
-        "PORT": env("POSTGRES_PORT",default=5432),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'task_manager_test',  # Use the test database name from the Docker Compose file
+        'USER': 'task_manager',        # Match the POSTGRES_USER from Docker Compose
+        'PASSWORD': 'task_manager',    # Match the POSTGRES_PASSWORD from Docker Compose
+        'HOST': 'localhost',           # The service is running on localhost
+        'PORT': '5433',                # Use the port from the test_db service in Docker Compose
+        'ATOMIC_REQUESTS': True,       # Ensure atomic requests are enabled
     }
 }
-
 
 
 # Password validation
@@ -193,7 +194,7 @@ ELASTICSEARCH_HOST = env('ELASTICSEARCH_HOST',default='localhost')
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'elasticsearch:9200'  # From docker-compose
+        'hosts': 'localhost:9200',  # You can mock or use a test instance
     },
 }
 
