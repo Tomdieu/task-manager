@@ -6,7 +6,6 @@ from elasticsearch_dsl.query import Q
 from rest_framework import status
 from rest_framework.authentication import (SessionAuthentication,
                                            TokenAuthentication)
-from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.response import Response
@@ -31,6 +30,24 @@ class TaskViewSet(ModelViewSet):
             return TaskDetailSerializer
         return TaskSerializer
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if self.request.user != instance.user:
+            return Response({"message":"Sorry can't update this task"},status=status.HTTP_401_UNAUTHORIZED)
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if self.request.user != instance.user:
+            return Response({"message":"Sorry can't update this task"},status=status.HTTP_401_UNAUTHORIZED)
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if self.request.user != instance.user:
+            return Response({"message":"Sorry can't delete this task"},status=status.HTTP_401_UNAUTHORIZED)
+        return super().destroy(request, *args, **kwargs)
+    
 class SearchTaskView(APIView):
     permission_classes = [AllowAny]
     search_document = TaskDocument
